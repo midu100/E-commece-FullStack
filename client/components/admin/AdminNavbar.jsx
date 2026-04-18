@@ -1,6 +1,5 @@
-"use client";
 import React, { useState } from 'react';
-import { MdMenu, MdNotificationsNone, MdOutlineAccountCircle, MdSearch } from 'react-icons/md';
+import { MdMenu, MdNotificationsNone, MdOutlineAccountCircle, MdSearch, MdMessage } from 'react-icons/md';
 
 const AdminNavbar = ({ setSidebarOpen }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -12,60 +11,70 @@ const AdminNavbar = ({ setSidebarOpen }) => {
   ];
 
   return (
-    <header className="h-20 bg-[#0f172a]/80 backdrop-blur-xl border-b border-indigo-500/10 flex items-center justify-between px-6 sticky top-0 z-40 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
-      <div className="flex items-center gap-4">
+    <header className="h-20 bg-[#1E222D] flex items-center justify-between px-8 sticky top-0 z-40 relative border-b border-white/5">
+      <div className="flex items-center gap-6 w-full">
         {/* Mobile Menu Button */}
         <button 
           onClick={() => setSidebarOpen(true)}
-          className="lg:hidden p-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 transition-colors shadow-sm"
+          className="lg:hidden p-2 rounded-xl text-slate-300 hover:bg-white/5 transition-colors"
         >
-          <MdMenu size={24} />
+          <MdMenu size={26} />
         </button>
-        <div className="hidden md:flex items-center bg-slate-800/50 border border-slate-700/50 px-4 py-2.5 rounded-2xl min-w-[320px] focus-within:ring-2 focus-within:ring-blue-500/50 transition-all shadow-inner">
+        <div className="hidden md:flex items-center gap-2 border-1 border-white p-2 rounded-[10px]">
           <MdSearch size={22} className="text-slate-400" />
           <input 
             type="text" 
-            placeholder="Search orders, products..." 
-            className="bg-transparent border-none outline-none px-3 text-[13px] w-full text-slate-200 placeholder-slate-500 font-medium"
+            placeholder="Search..." 
+            className="bg-transparent border-none outline-none text-[14px] w-64 text-slate-200 placeholder-slate-400 font-medium focus:ring-0"
           />
         </div>
+        
       </div>
 
-      <div className="flex items-center gap-4 md:gap-6 relative">
+      <div className="flex items-center gap-4 md:gap-6 relative shrink-0">
+        
+        <button className="text-slate-400 hover:text-white transition-colors">
+           <MdMessage size={22} />
+        </button>
+
         <button 
-          className="relative p-2.5 rounded-2xl bg-slate-800/50 border border-slate-700/50 hover:bg-slate-700/80 transition-colors shadow-sm"
+          className="relative text-slate-400 hover:text-white transition-colors"
           onClick={() => setShowNotifications(!showNotifications)}
         >
-          <MdNotificationsNone size={24} className="text-blue-400" />
-          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-[#0f172a] shadow-[0_0_8px_rgba(239,68,68,1)]"></span>
+          <MdNotificationsNone size={24} />
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[9px] font-bold flex items-center justify-center rounded-full border-2 border-[#1E222D]">5</span>
         </button>
 
         {showNotifications && (
-          <div className="absolute top-14 right-10 w-80 bg-[#1e293b] border border-indigo-500/20 shadow-2xl rounded-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-4 duration-200">
-            <div className="bg-[#0f172a]/50 px-5 py-4 border-b border-slate-700/50 flex justify-between items-center backdrop-blur-sm">
-              <h3 className="font-bold text-slate-200 text-sm tracking-wide">Notifications</h3>
-              <span className="text-[10px] bg-blue-500/10 text-blue-400 outline outline-1 outline-blue-500/30 px-2 py-1 rounded-full font-bold uppercase tracking-wider">3 New</span>
+          <div className="absolute top-12 right-12 w-80 bg-white shadow-xl rounded-2xl overflow-hidden z-50 border border-slate-100">
+            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+              <h3 className="font-bold text-slate-800 text-sm tracking-wide">Notifications</h3>
+              <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded-full font-bold uppercase tracking-wider">3 New</span>
             </div>
-            <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700">
+            <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
               {notifications.map((notif) => (
-                <div key={notif.id} className="px-5 py-4 border-b border-slate-700/30 hover:bg-slate-800/80 cursor-pointer transition-colors group">
-                  <p className="text-[13px] font-semibold text-slate-300 group-hover:text-blue-300 transition-colors leading-relaxed">{notif.text}</p>
-                  <p className="text-[11px] font-medium text-slate-500 mt-2 flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {notif.time}</p>
+                <div key={notif.id} className="px-5 py-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer transition-colors group">
+                  <p className="text-[13px] font-semibold text-slate-700 group-hover:text-blue-600 transition-colors leading-relaxed">{notif.text}</p>
+                  <p className="text-[11px] font-medium text-slate-400 mt-2 flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-blue-600 rounded-full"></span> {notif.time}</p>
                 </div>
               ))}
             </div>
-            <div className="p-3 text-center border-t border-slate-700/50 bg-[#0f172a]/50 hover:bg-slate-800 cursor-pointer transition-colors backdrop-blur-sm">
-              <span className="text-xs font-bold text-blue-400 tracking-wide">View All Notifications</span>
+            <div className="p-3 text-center border-t border-slate-100 bg-white hover:bg-slate-50 cursor-pointer transition-colors">
+              <span className="text-xs font-bold text-blue-600 tracking-wide">View All Notifications</span>
             </div>
           </div>
         )}
         
-        <div className="flex items-center gap-3 pl-4 border-l border-slate-700/50 cursor-pointer hover:bg-slate-800/50 p-2 rounded-2xl transition-colors">
-          <div className="hidden sm:block text-right">
-            <p className="text-[13px] font-bold text-slate-200 tracking-wide">Admin</p>
-            <p className="text-[10px] text-blue-400 font-bold tracking-widest uppercase mt-0.5">Super Admin</p>
+        <div className="flex items-center gap-3 pl-4 cursor-pointer">
+          <div className="w-9 h-9 rounded-full bg-[#1bc48b] text-white flex items-center justify-center font-bold text-[15px] shadow-sm">
+            KM
           </div>
-          <MdOutlineAccountCircle size={42} className="text-slate-500 -ml-1 border-2 border-slate-700 rounded-full bg-slate-800" />
+          <div className="hidden sm:flex items-center gap-2">
+            <p className="text-[14px] font-bold text-slate-200">Kazi Mridul</p>
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L5 5L9 1" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
         </div>
       </div>
     </header>

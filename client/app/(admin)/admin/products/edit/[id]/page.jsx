@@ -1,108 +1,188 @@
 "use client";
-import React, { useState, useEffect, use } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { MdArrowBack, MdCloudUpload, MdSave } from 'react-icons/md';
+import { useParams } from 'next/navigation';
 
-const EditProduct = ({ params }) => {
-  const unwrappedParams = use(params);
-  const id = unwrappedParams.id;
-  const [dragActive, setDragActive] = useState(false);
+const EditProduct = () => {
+  const params = useParams();
+  const [hasMultipleOptions, setHasMultipleOptions] = useState(true);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 isolate">
-      <div className="flex items-center gap-4 bg-[#1e293b] p-6 rounded-2xl shadow-xl border border-slate-700/50">
-        <Link 
-          href="/admin/products"
-          className="p-3 border border-slate-700/50 bg-[#0f172a] rounded-xl hover:bg-slate-800 transition-colors shadow-inner text-slate-400 group"
-        >
-          <MdArrowBack size={24} className="group-hover:-translate-x-1 transition-transform text-slate-300" />
-        </Link>
+    <div className="max-w-7xl mx-auto space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-wide">Edit Product #{id}</h2>
-          <p className="text-[13px] text-slate-400 font-medium tracking-wide mt-1">Update inventory details.</p>
+          <Link href="/admin/products" className="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors flex items-center gap-1 mb-1">
+            &larr; Back
+          </Link>
+          <h2 className="text-[22px] font-bold text-slate-800">Edit Product {params?.id ? `(#${params.id.slice(-6)})` : ''}</h2>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/admin/products" className="px-5 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+            Cancel
+          </Link>
+          <button className="px-5 py-2 text-sm font-bold text-white bg-blue-600 border border-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-600/30">
+            Update Product
+          </button>
         </div>
       </div>
 
-      <div className="bg-[#1e293b] p-8 rounded-2xl shadow-xl border border-slate-700/50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-3xl pointer-events-none rounded-full"></div>
-        <form className="space-y-8 relative z-10" onSubmit={(e) => e.preventDefault()}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2.5">
-              <label className="text-[13px] font-bold text-slate-300 tracking-wide uppercase">Product Name</label>
-              <input 
-                type="text" 
-                defaultValue="Wireless Headphones"
-                className="w-full px-5 py-4 rounded-xl border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all bg-[#0f172a] text-slate-200 placeholder-slate-600 font-medium shadow-inner"
-              />
-            </div>
-            
-            <div className="space-y-2.5">
-              <label className="text-[13px] font-bold text-slate-300 tracking-wide uppercase">Category</label>
-              <select defaultValue="Electronics" className="w-full px-5 py-4 rounded-xl border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all bg-[#0f172a] text-slate-200 shadow-inner appearance-none cursor-pointer">
-                <option className="bg-slate-800">Electronics</option>
-                <option className="bg-slate-800">Apparel</option>
-                <option className="bg-slate-800">Accessories</option>
-              </select>
-            </div>
-
-            <div className="space-y-2.5">
-              <label className="text-[13px] font-bold text-slate-300 tracking-wide uppercase">Price ($)</label>
-              <input 
-                type="number" 
-                defaultValue="99.99"
-                className="w-full px-5 py-4 rounded-xl border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all bg-[#0f172a] text-slate-200 placeholder-slate-600 font-medium shadow-inner"
-              />
-            </div>
-
-            <div className="space-y-2.5">
-              <label className="text-[13px] font-bold text-slate-300 tracking-wide uppercase">Stock Quantity</label>
-              <input 
-                type="number" 
-                defaultValue="45"
-                className="w-full px-5 py-4 rounded-xl border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all bg-[#0f172a] text-slate-200 placeholder-slate-600 font-medium shadow-inner"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2.5">
-            <label className="text-[13px] font-bold text-slate-300 tracking-wide uppercase">Product Description</label>
-            <textarea 
-              rows="4"
-              defaultValue="High-quality wireless headphones with noise cancellation."
-              className="w-full px-5 py-4 rounded-xl border border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/30 transition-all bg-[#0f172a] text-slate-200 placeholder-slate-600 font-medium shadow-inner"
-            ></textarea>
-          </div>
-
-          <div className="space-y-2.5">
-            <label className="text-[13px] font-bold text-slate-300 tracking-wide uppercase">Product Image</label>
-            <div className="flex gap-6 mb-4">
-              <img src="https://via.placeholder.com/100" alt="Current" className="w-24 h-24 rounded-2xl object-cover border-2 border-slate-700/50 shadow-xl" />
-              <div 
-                className={`flex-1 border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-300 cursor-pointer ${
-                  dragActive 
-                    ? 'border-blue-500 bg-blue-500/5' 
-                    : 'border-slate-700 bg-[#0f172a]/50 hover:bg-[#0f172a]/80 hover:border-blue-500/30'
-                }`}
-                onDragEnter={() => setDragActive(true)}
-                onDragLeave={() => setDragActive(false)}
-                onDrop={() => setDragActive(false)}
-                onDragOver={(e) => e.preventDefault()}
-              >
-                <div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors bg-slate-800 text-slate-500">
-                  <MdCloudUpload size={24} />
-                </div>
-                <p className="font-bold text-slate-300 text-[13px] tracking-wide">Replace image (drop here)</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (Main Content) */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* Information */}
+          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-6">Information</h3>
+            <div className="space-y-5">
+              <div>
+                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Product Name</label>
+                <input 
+                  type="text" 
+                  defaultValue="Summer T-Shirt"
+                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-400 text-slate-700 font-medium"
+                  placeholder="Product Title"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Product Description</label>
+                <textarea 
+                  rows="4"
+                  defaultValue="A comfortable and stylish summer t-shirt perfect for casual wear."
+                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-400 resize-none text-slate-700 font-medium"
+                  placeholder="Product description"
+                ></textarea>
               </div>
             </div>
           </div>
-          
-          <div className="flex justify-end pt-6 border-t border-slate-700/50">
-            <button className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3.5 rounded-xl font-bold tracking-widest transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] flex items-center gap-2 border border-blue-400/30 uppercase text-xs">
-              <MdSave size={18} />
-              Update Changes
-            </button>
+
+          {/* Images */}
+          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-6">Images</h3>
+            <div className="border border-dashed border-slate-300 rounded-xl p-10 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer">
+               <button className="px-4 py-2 bg-white border border-slate-200 rounded text-blue-600 font-semibold text-sm mb-2 shadow-sm">Change Image</button>
+               <p className="text-xs font-semibold text-slate-400">Or drag and drop files</p>
+            </div>
           </div>
-        </form>
+
+          {/* Price */}
+          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-6">Price</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+              <div>
+                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Product Price</label>
+                <input 
+                  type="text" 
+                  defaultValue="29.99"
+                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 text-slate-700 font-medium"
+                  placeholder="Enter price"
+                />
+              </div>
+              <div>
+                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Discount Price</label>
+                <input 
+                  type="text" 
+                  defaultValue="24.99"
+                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 text-slate-700 font-medium"
+                  placeholder="Price at Discount"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-5 bg-blue-600 rounded-full relative cursor-pointer">
+                <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform translate-x-5"></div>
+              </div>
+              <span className="text-sm font-semibold text-slate-600">Add tax for this product</span>
+            </div>
+          </div>
+
+          {/* Variants */}
+          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-6">Variants</h3>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end pb-3 border-b border-slate-50 relative group">
+                <button className="absolute -left-3 top-9 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                   &times;
+                </button>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">SKU</label>
+                  <input type="text" defaultValue="TSH-001" className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 bg-white font-medium" />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">Size</label>
+                  <select className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 text-slate-700 bg-white font-medium">
+                    <option>S</option>
+                    <option defaultValue>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                    <option>XXL</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">Color</label>
+                  <input type="text" defaultValue="Red" className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 bg-white font-medium" />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">Stock</label>
+                  <input type="number" defaultValue="45" className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 bg-white font-medium" />
+                </div>
+              </div>
+              <button className="text-sm font-bold text-blue-600 mt-2 hover:text-blue-700 flex items-center gap-1">+ Add Another Variant</button>
+            </div>
+          </div>
+          
+        </div>
+
+        {/* Right Column (Sidebar form items) */}
+        <div className="space-y-6">
+          {/* Categories */}
+          <div className="bg-white p-6 rounded-xl border border-blue-500 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">Categories</h3>
+            <div className="space-y-3">
+              {['Women', 'Men', 'T-Shirt', 'Hoodie', 'Dress'].map((cat) => (
+                <label key={cat} className="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" defaultChecked={cat === 'T-Shirt' || cat === 'Men'} className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                  <span className="text-sm font-semibold text-slate-600">{cat}</span>
+                </label>
+              ))}
+            </div>
+            <button className="text-sm font-bold text-blue-600 mt-5 hover:text-blue-700">Create New</button>
+          </div>
+
+          {/* SEO Settings */}
+          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+            <h3 className="font-bold text-slate-800 mb-4">SEO Settings</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-500 mb-2">Title</label>
+                <input 
+                  type="text" 
+                  defaultValue="Summer T-Shirt"
+                  className="w-full px-4 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 text-slate-700 font-medium"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-500 mb-2">Description</label>
+                <textarea 
+                  rows="3"
+                  defaultValue="A comfortable and stylish summer t-shirt perfect for casual wear."
+                  className="w-full px-4 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 resize-none text-slate-700 font-medium"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Actions */}
+      <div className="flex justify-end gap-3 pt-6">
+        <Link href="/admin/products" className="px-6 py-2 text-sm font-bold text-blue-600 bg-white border border-blue-600 rounded-lg hover:bg-slate-50 transition-colors">
+          Cancel
+        </Link>
+        <button className="px-6 py-2 text-sm font-bold text-white bg-blue-600 border border-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-600/30">
+          Update
+        </button>
       </div>
     </div>
   );

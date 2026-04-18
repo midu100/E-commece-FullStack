@@ -1,8 +1,6 @@
 "use client";
 import React from 'react';
-import DataTable from '@/components/admin/DataTable';
 import { MdBlock, MdDelete, MdPeople, MdPersonAdd, MdStar } from 'react-icons/md';
-import DashboardCard from '@/components/admin/DashboardCard';
 
 const usersData = [
   { id: 101, name: 'Alice Cooper', email: 'alice@example.com', role: 'Customer', joinDate: 'Jan 15, 2023', status: 'Active' },
@@ -14,78 +12,99 @@ const usersData = [
 const Users = () => {
   const getStatusBadge = (status) => {
     return status === 'Active' 
-      ? <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wider">Active</span>
-      : <span className="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-wider">Blocked</span>;
+      ? <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded text-[11px] font-bold uppercase">Active</span>
+      : <span className="bg-red-50 text-red-600 px-3 py-1 rounded text-[11px] font-bold uppercase">Blocked</span>;
   };
 
-  const columns = [
-    { 
-      label: 'User', 
-      render: (row) => (
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold border border-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.3)]">
-            {row.name.charAt(0)}
-          </div>
-          <div>
-            <p className="font-bold text-slate-200 tracking-wide">{row.name}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5 tracking-wider">{row.email}</p>
-          </div>
-        </div>
-      )
-    },
-    { label: 'Role', render: (row) => <span className="font-bold text-slate-400">{row.role}</span> },
-    { label: 'Joined Date', render: (row) => <span className="font-medium text-slate-400">{row.joinDate}</span> },
-    { label: 'Status', render: (row) => getStatusBadge(row.status) },
-  ];
-
-  const actions = (row) => (
-    <div className="flex justify-end gap-3">
-      {row.status === 'Active' ? (
-        <button className="text-amber-500 hover:bg-amber-500/10 border border-amber-500/10 hover:border-amber-500/30 px-3 py-2 rounded-xl transition-all font-bold text-[11px] flex items-center gap-1.5 uppercase tracking-widest">
-          <MdBlock size={16} /> Block
-        </button>
-      ) : (
-        <button className="text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/10 hover:border-emerald-500/30 px-3 py-2 rounded-xl transition-all font-bold text-[11px] flex items-center gap-1.5 uppercase tracking-widest">
-          Unblock
-        </button>
-      )}
-      <button className="text-red-500 hover:bg-red-500/10 border border-red-500/10 hover:border-red-500/30 p-2 rounded-xl transition-all">
-        <MdDelete size={18} />
-      </button>
-    </div>
-  );
-
   return (
-    <div className="space-y-6">
-      <div className="bg-[#1e293b] p-6 rounded-2xl shadow-xl border border-slate-700/50 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="max-w-7xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-wide">User Management</h2>
-          <p className="text-[13px] text-slate-400 mt-1 font-medium tracking-wide">Manage customers, admins, and roles.</p>
+          <h2 className="text-[22px] font-bold text-slate-800">User Management</h2>
+          <p className="text-[13px] text-slate-500 font-medium mt-1">Manage customers, admins, and roles.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <DashboardCard 
-          title="Total Active Users" 
-          value="892" 
-          icon={<MdPeople size={28} />} 
-          gradient="bg-gradient-to-br from-indigo-500 to-indigo-700"
-        />
-        <DashboardCard 
-          title="New Users (7 Days)" 
-          value="124" 
-          icon={<MdPersonAdd size={28} />} 
-          gradient="bg-gradient-to-br from-emerald-500 to-emerald-700"
-        />
-        <DashboardCard 
-          title="Top Customers" 
-          value="15" 
-          icon={<MdStar size={28} />} 
-          gradient="bg-gradient-to-br from-amber-500 to-amber-700"
-        />
+        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-[12px] text-slate-500 font-bold uppercase tracking-wider mb-1">Total Active Users</p>
+            <h3 className="text-2xl font-bold text-slate-800">892</h3>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <MdPeople size={24} />
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-[12px] text-slate-500 font-bold uppercase tracking-wider mb-1">New Users (7 Days)</p>
+            <h3 className="text-2xl font-bold text-slate-800">124</h3>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <MdPersonAdd size={24} />
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-[12px] text-slate-500 font-bold uppercase tracking-wider mb-1">Top Customers</p>
+            <h3 className="text-2xl font-bold text-slate-800">15</h3>
+          </div>
+          <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center">
+            <MdStar size={24} />
+          </div>
+        </div>
       </div>
 
-      <DataTable columns={columns} data={usersData} actions={actions} />
+      <div className="bg-white w-full overflow-x-auto rounded-xl border border-slate-100 shadow-sm">
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 font-medium">
+              <th className="py-4 px-6 font-semibold w-1/3">User</th>
+              <th className="py-4 px-6 font-semibold">Role</th>
+              <th className="py-4 px-6 font-semibold">Joined Date</th>
+              <th className="py-4 px-6 font-semibold">Status</th>
+              <th className="py-4 px-6 font-semibold text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usersData.map((row) => (
+              <tr key={row.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">
+                <td className="py-4 px-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                      {row.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-800 text-[13px]">{row.name}</p>
+                      <p className="text-[11px] text-slate-500 font-medium">{row.email}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="py-4 px-6 font-semibold text-slate-600">{row.role}</td>
+                <td className="py-4 px-6 font-medium text-slate-600">{row.joinDate}</td>
+                <td className="py-4 px-6">{getStatusBadge(row.status)}</td>
+                <td className="py-4 px-6 text-right">
+                  <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {row.status === 'Active' ? (
+                      <button className="text-amber-500 hover:bg-amber-50 px-2 py-1.5 rounded transition-colors font-bold text-[11px] flex items-center gap-1 uppercase">
+                        <MdBlock size={14} /> Block
+                      </button>
+                    ) : (
+                      <button className="text-emerald-600 hover:bg-emerald-50 px-2 py-1.5 rounded transition-colors font-bold text-[11px] flex items-center gap-1 uppercase">
+                        Unblock
+                      </button>
+                    )}
+                    <button className="text-slate-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors">
+                      <MdDelete size={16} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   );
 };

@@ -1,54 +1,58 @@
 "use client";
 import React from 'react';
-import DataTable from '@/components/admin/DataTable';
-import { MdAdd, MdEdit, MdDelete } from 'react-icons/md';
+import Link from 'next/link';
+import { MdAdd, MdEdit } from 'react-icons/md';
 
 const categoriesData = [
-  { id: 1, name: 'Electronics', count: 120, status: 'Active' },
-  { id: 2, name: 'Apparel', count: 340, status: 'Active' },
-  { id: 3, name: 'Accessories', count: 85, status: 'Active' },
-  { id: 4, name: 'Home & Garden', count: 42, status: 'Inactive' },
+  { id: 1, name: 'Men Clothes', count: 24, img: 'https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&q=80&w=400&h=300' },
+  { id: 2, name: 'Women Clothes', count: 12, img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=400&h=300', isHover: true },
+  { id: 3, name: 'Accessories', count: 43, img: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&q=80&w=400&h=300' },
+  { id: 4, name: 'Cotton Clothes', count: 31, img: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&q=80&w=400&h=300' },
+  { id: 5, name: 'Summer Clothes', count: 26, img: 'https://images.unsplash.com/photo-1528654813589-9b419b40092c?auto=format&fit=crop&q=80&w=400&h=300', isActive: true },
+  { id: 6, name: 'Wedding Clothes', count: 52, img: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&q=80&w=400&h=300' },
+  { id: 7, name: 'Spring Collection', count: 24, img: 'https://images.unsplash.com/photo-1522512115668-c09775d6f424?auto=format&fit=crop&q=80&w=400&h=300' },
+  { id: 8, name: 'Casual Clothes', count: 52, img: 'https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&q=80&w=400&h=300' },
+  { id: 9, name: 'Hats', count: 26, img: 'https://images.unsplash.com/photo-1576871337622-98d48d1cf531?auto=format&fit=crop&q=80&w=400&h=300' },
 ];
 
 const Categories = () => {
-  const columns = [
-    { label: 'Category Name', render: (row) => <span className="font-bold text-slate-200 tracking-wide">{row.name}</span> },
-    { label: 'Products Count', render: (row) => <span className="text-slate-400 font-medium">{row.count} items</span> },
-    { 
-      label: 'Status', 
-      render: (row) => (
-        <span className={`px-3 py-1.5 rounded-md text-[11px] font-bold tracking-wider uppercase border ${row.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-400 border-slate-700/50'}`}>
-          {row.status}
-        </span>
-      )
-    },
-  ];
-
-  const actions = (row) => (
-    <div className="flex justify-end gap-3">
-      <button className="text-blue-400 hover:bg-blue-500/10 border border-transparent hover:border-blue-500/20 p-2 rounded-xl transition-colors">
-        <MdEdit size={20} />
-      </button>
-      <button className="text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 p-2 rounded-xl transition-colors">
-        <MdDelete size={20} />
-      </button>
-    </div>
-  );
-
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#1e293b] p-6 rounded-2xl shadow-xl border border-slate-700/50">
-        <div>
-          <h2 className="text-2xl font-bold text-white tracking-wide">Categories</h2>
-          <p className="text-[13px] text-slate-400 mt-1 font-medium tracking-wide">Organize your products by category.</p>
-        </div>
-        <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-400/30 uppercase text-[13px] font-bold tracking-widest">
+      
+      {/* Header */}
+      <div className="flex justify-between items-center bg-transparent">
+        <h2 className="text-[22px] font-bold text-slate-800">Categories</h2>
+        <Link href="/admin/categories/add" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg flex items-center justify-center gap-2 font-medium text-sm transition-colors shadow-sm">
           <MdAdd size={20} />
           <span>Add Category</span>
-        </button>
+        </Link>
       </div>
 
-      <DataTable columns={columns} data={categoriesData} actions={actions} />
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {categoriesData.map((cat, i) => (
+          <div 
+            key={i} 
+            className={`bg-white rounded-xl overflow-hidden shadow-sm transition-all group relative cursor-pointer ${cat.isActive ? 'border-2 border-blue-500' : 'border border-slate-100 hover:shadow-md hover:border-slate-200'}`}
+          >
+            <div className="h-48 w-full bg-slate-100 relative overflow-hidden">
+               <img src={cat.img} alt={cat.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+               
+               {/* Hover or active Edit action */}
+               <div className={`absolute inset-0 bg-black/10 flex items-center justify-center transition-opacity duration-300 ${cat.isHover ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                  <button className="bg-white text-blue-600 px-4 py-2 rounded shadow-lg flex items-center gap-2 font-bold text-sm transform -translate-y-2 group-hover:translate-y-0 transition-transform">
+                     <MdEdit size={16} /> Edit
+                  </button>
+               </div>
+            </div>
+            <div className="p-5">
+               <h3 className="font-bold text-slate-800 text-[15px]">{cat.name}</h3>
+               <p className="text-[13px] text-slate-500 font-medium mt-0.5">{cat.count} items</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 };
