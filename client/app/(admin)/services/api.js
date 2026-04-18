@@ -10,4 +10,4 @@ export const adminApiService = createApi({
     })
 })
 
-exports const {useGetProductsQuery }= adminApiService
+export const {useGetProductsQuery }= adminApiService

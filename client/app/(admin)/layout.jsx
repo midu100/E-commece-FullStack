@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Sidebar from '@/components/admin/Sidebar';
 import AdminNavbar from '@/components/admin/AdminNavbar';
 import { ApiProvider } from '@reduxjs/toolkit/query/react';
+import { adminApiService } from './services/api';
 
 export default function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -23,8 +24,9 @@ export default function AdminLayout({ children }) {
         {/* Page Content area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 lg:p-8 relative z-10 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
           <div className="max-w-7xl mx-auto">
-            <ApiProvider> 
+            <ApiProvider api={adminApiService}> 
                {children}
+               
             </ApiProvider>
           </div>
         </main>

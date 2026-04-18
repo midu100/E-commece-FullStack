@@ -1,85 +1,67 @@
 "use client";
-import React, { useState } from 'react';
-import Link from 'next/link';
-import DataTable from '@/components/admin/DataTable';
-import { MdAdd, MdEdit, MdDelete, MdSearch, MdFilterList, MdWarning } from 'react-icons/md';
-
-const productsData = [
-  { id: 1, image: 'https://via.placeholder.com/50', name: 'Wireless Headphones', price: '$99.99', stock: 45, category: 'Electronics' },
-  { id: 2, image: 'https://via.placeholder.com/50', name: 'Running Shoes', price: '$120.00', stock: 12, category: 'Apparel' },
-  { id: 3, image: 'https://via.placeholder.com/50', name: 'Smart Watch Series 7', price: '$299.00', stock: 0, category: 'Electronics' },
-  { id: 4, image: 'https://via.placeholder.com/50', name: 'Leather Wallet', price: '$45.00', stock: 3, category: 'Accessories' },
-  { id: 5, image: 'https://via.placeholder.com/50', name: 'Cotton T-Shirt', price: '$18.00', stock: 150, category: 'Apparel' },
-];
+import React, { useState } from "react";
+import Link from "next/link";
+import {
+  MdAdd,
+  MdEdit,
+  MdDelete,
+  MdSearch,
+  MdWarning,
+} from "react-icons/md";
+import { useGetProductsQuery } from "../../services/api";
 
 const Products = () => {
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState("All");
 
-  const filteredProducts = productsData.filter(p => {
-    if(filter === 'Low Stock') return p.stock > 0 && p.stock < 15;
-    if(filter === 'Out of Stock') return p.stock === 0;
+  const { data: allProducts, isLoading } = useGetProductsQuery();
+
+  // 🔥 Total Stock Calculate Function
+  const getTotalStock = (variants) => {
+    return variants?.reduce((total, v) => total + v.stock, 0) || 0;
+  };
+
+  // 🔥 Filter Logic
+  const filteredProducts = allProducts?.productList?.filter((p) => {
+    const totalStock = getTotalStock(p.variants);
+
+    if (filter === "Low Stock") return totalStock > 0 && totalStock < 20;
+    if (filter === "Out of Stock") return totalStock === 0;
+
     return true;
   });
 
-  const columns = [
-    { 
-      label: 'Image', 
-      render: (row) => (
-        <img src={row.image} alt={row.name} className="w-12 h-12 rounded-xl object-cover border border-slate-700/50" />
-      )
-    },
-    { label: 'Product Name', render: (row) => (
-      <div>
-        <span className="font-bold text-slate-200 block tracking-wide">{row.name}</span>
-        {row.stock < 15 && row.stock > 0 && <span className="text-[10px] text-amber-500 flex items-center gap-1 font-bold mt-0.5 uppercase tracking-wider"><MdWarning /> Low Stock</span>}
-      </div>
-    )},
-    { label: 'Category', render: (row) => <span className="text-slate-400 font-medium">{row.category}</span> },
-    { label: 'Price', render: (row) => <span className="text-slate-300 font-bold">{row.price}</span> },
-    { 
-      label: 'Stock', 
-      render: (row) => (
-        <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wider uppercase border ${row.stock === 0 ? 'bg-red-500/10 text-red-400 border-red-500/20' : row.stock < 15 ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
-          {row.stock === 0 ? 'Out of Stock' : `${row.stock} in stock`}
-        </span>
-      )
-    },
-  ];
-
-  const actions = (row) => (
-    <div className="flex justify-end gap-3">
-      <Link href={`/admin/products/edit/${row.id}`} className="text-blue-400 hover:bg-blue-500/10 border border-transparent hover:border-blue-500/20 p-2 rounded-xl transition-colors">
-        <MdEdit size={20} />
-      </Link>
-      <button className="text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 p-2 rounded-xl transition-colors">
-        <MdDelete size={20} />
-      </button>
-    </div>
-  );
-
   return (
     <div className="space-y-6">
+      {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#1e293b] p-6 rounded-2xl shadow-xl border border-slate-700/50">
         <div>
-          <h2 className="text-2xl font-bold text-white tracking-wide">Products</h2>
-          <p className="text-[13px] text-slate-400 mt-1 font-medium">Manage your store inventory here.</p>
+          <h2 className="text-2xl font-bold text-white">Products</h2>
+          <p className="text-[13px] text-slate-400 mt-1">
+            Manage your store inventory here.
+          </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-          <div className="flex items-center bg-[#0f172a] border border-slate-700/50 px-4 py-2.5 rounded-xl shadow-inner focus-within:border-blue-500/50 transition-colors">
-            <MdSearch size={22} className="text-slate-500" />
-            <input type="text" placeholder="Search product..." className="bg-transparent border-none outline-none px-3 w-full text-[13px] text-slate-200 placeholder-slate-500 font-medium" />
+
+        <div className="flex gap-4 w-full md:w-auto">
+          <div className="flex items-center bg-[#0f172a] border border-slate-700 px-4 py-2 rounded-xl">
+            <MdSearch className="text-slate-500" />
+            <input
+              type="text"
+              placeholder="Search product..."
+              className="bg-transparent outline-none px-2 text-sm text-white"
+            />
           </div>
-          <Link 
-            href="/admin/products/add" 
-            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl flex justify-center items-center gap-2 transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] font-bold tracking-wide border border-blue-400/30"
+
+          <Link
+            href="/admin/products/add"
+            className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-xl flex items-center gap-2"
           >
-            <MdAdd size={20} />
-            <span>Add Product</span>
+            <MdAdd />
+            Add Product
           </Link>
         </div>
       </div>
 
+      {/* FILTER */}
       <div className="bg-[#1e293b] p-5 rounded-2xl shadow-xl border border-slate-700/50 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex gap-2 bg-[#0f172a] p-1.5 rounded-xl border border-slate-700/50">
           {['All', 'Low Stock', 'Out of Stock'].map(f => (
@@ -92,21 +74,124 @@ const Products = () => {
             </button>
           ))}
         </div>
-        
-        {selectedIds.length > 0 && (
-          <button className="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 px-5 py-2.5 rounded-xl text-[13px] font-bold flex items-center gap-2 transition-colors">
-            <MdDelete size={18} /> Delete Selected ({selectedIds.length})
-          </button>
-        )}
       </div>
 
-      <DataTable 
-        columns={columns} 
-        data={filteredProducts} 
-        actions={actions} 
-        selectable={true} 
-        onSelectionChange={setSelectedIds} 
-      />
+      {/* TABLE */}
+      <div className="bg-[#1e293b] rounded-xl overflow-hidden">
+        <table className="w-full text-left">
+          <thead className="bg-[#0f172a] text-slate-300 text-sm">
+            <tr>
+              <th className="p-4">Image</th>
+              <th className="p-4">Product</th>
+              <th className="p-4">Category</th>
+              <th className="p-4">Price</th>
+              <th className="p-4">Stock</th>
+              <th className="p-4 text-right">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan="6" className="text-center p-6 text-slate-400">
+                  Loading...
+                </td>
+              </tr>
+            ) : filteredProducts?.length > 0 ? (
+              filteredProducts.map((row, index) => {
+                const totalStock = getTotalStock(row.variants);
+
+                return (
+                  <tr
+                    key={index}
+                    className={`border-b border-slate-700 transition ${
+                      totalStock < 20
+                        ? "bg-red-500/5"
+                        : "hover:bg-slate-800"
+                    }`}
+                  >
+                    {/* IMAGE */}
+                    <td className="p-4">
+                      <img
+                        src={
+                          row.thumbnail ||
+                          "https://via.placeholder.com/50"
+                        }
+                        className="w-12 h-12 rounded object-cover"
+                      />
+                    </td>
+
+                    {/* NAME */}
+                    <td className="p-4">
+                      <div className="text-white font-semibold">
+                        {row.title}
+                      </div>
+
+                      {totalStock < 20 && totalStock > 0 && (
+                        <div className="text-red-500 text-xs flex items-center gap-1 mt-1">
+                          <MdWarning /> Low Stock
+                        </div>
+                      )}
+                    </td>
+
+                    {/* CATEGORY */}
+                    <td className="p-4 text-slate-400">
+                      {row?.category?.name}
+                    </td>
+
+                    {/* PRICE */}
+                    <td className="p-4 text-white font-bold">
+                      ${row.price}
+                    </td>
+
+                    {/* STOCK */}
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 text-xs rounded font-bold
+                        ${
+                          totalStock === 0
+                            ? "bg-red-500/10 text-red-400"
+                            : totalStock < 20
+                            ? "bg-red-500/10 text-red-400"
+                            : "bg-green-500/10 text-green-400"
+                        }`}
+                      >
+                        {totalStock === 0
+                          ? "Out of Stock"
+                          : totalStock < 20
+                          ? `${totalStock} Low`
+                          : `${totalStock} in stock`}
+                      </span>
+                    </td>
+
+                    {/* ACTION */}
+                    <td className="p-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/admin/products/edit/${row._id}`}
+                          className="text-blue-400"
+                        >
+                          <MdEdit />
+                        </Link>
+
+                        <button className="text-red-400">
+                          <MdDelete />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center p-6 text-slate-400">
+                  No products found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
