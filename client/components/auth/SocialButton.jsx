@@ -6,11 +6,11 @@ export default function SocialButton({ provider, icon, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-center gap-3 rounded-2xl border-2 border-gray-100 bg-white px-6 py-4 text-[13px] font-bold text-gray-700 transition-all hover:bg-gray-50 hover:border-gray-200 active:scale-[0.98] shadow-sm !m-0 outline-none"
+      className="flex w-full items-center justify-center gap-3 rounded-2xl border border-gray-200/80 bg-white/70 backdrop-blur-sm px-6 py-3.5 text-[13px] font-semibold text-gray-700 transition-all hover:bg-white hover:border-gray-300 hover:shadow-md active:scale-[0.98] !m-0 outline-none cursor-pointer"
       style={{ boxSizing: 'border-box' }}
     >
       {icon}
-      <span>Continue with {provider}</span>
+      <span>{provider}</span>
     </button>
   );
 }

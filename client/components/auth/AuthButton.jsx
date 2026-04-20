@@ -9,17 +9,18 @@ export default function AuthButton({ text, onClick, type = "submit", icon, disab
       disabled={disabled}
       className={`
         relative group flex w-full items-center justify-center gap-3 overflow-hidden 
-        rounded-2xl bg-black px-6 py-4 text-[13px] font-bold text-white 
-        shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 
-        hover:bg-gray-900 hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] 
+        rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600
+        px-6 py-4 text-[13px] font-bold text-white 
+        shadow-[0_8px_30px_rgba(139,92,246,0.35)] transition-all duration-300 
+        hover:shadow-[0_12px_40px_rgba(139,92,246,0.5)] hover:scale-[1.01]
         active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed
-        !m-0 border-0 outline-none
+        !m-0 border-0 outline-none cursor-pointer
       `}
       style={{ boxSizing: 'border-box' }}
     >
       {/* Light sweep animation on hover */}
       <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
-        <div className="relative h-full w-8 bg-white/20" />
+        <div className="relative h-full w-10 bg-white/25" />
       </div>
       
       <span className="relative z-10 tracking-widest uppercase">{text}</span>
