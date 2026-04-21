@@ -1,10 +1,13 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import AuthImageSlider from "@/components/auth/AuthImageSlider";
 import AuthFormInput from "@/components/auth/AuthFormInput";
 import AuthButton from "@/components/auth/AuthButton";
 import AuthSocialSection from "@/components/auth/AuthSocialSection";
+import toast, { Toaster } from 'react-hot-toast';
+import { redirect } from "next/navigation";
+
 
 const slides = [
   {
@@ -25,9 +28,54 @@ const slides = [
 ];
 
 const SignIn = () => {
+  const [formData,setFormData] = useState({email:'',password:''})
+  const [errors, setErrors] = useState('');
+
+  const handleLogin = async(e)=>{
+    e.preventDefault()
+    try {
+       if(!formData.email) return setErrors('email is required.')
+       if(!formData.password) return setErrors('Password is required.')
+
+       const res = await fetch('http://localhost:8000/auth/signin',{
+        method : 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+       })
+
+       const data = await res.json()
+       if(!res.ok){
+        if(data.message === 'Email is required' || data.message === 'Your email is not verify,please verfy your email.') setErrors(data.message)
+        if(data.message ==='Password is required' || data.message === 'Incorrect password') setErrors(data.message)
+        if(data.message === 'User Not Registered') setErrors(data.message)
+
+        return
+
+       }
+       console.log(data)
+       toast.success(data.message,{
+        duration: 5000,
+       position: 'top-center',
+      });
+
+      setTimeout(()=>{
+        redirect('/')
+      },3000)
+
+
+    } 
+    catch (error) {
+       console.log(error)  
+    }
+
+
+
+  }
+
+
   return (
     <div className="w-full max-w-[1060px] bg-white/60 backdrop-blur-2xl rounded-[32px] shadow-[0_30px_80px_-20px_rgba(100,60,180,0.15)] overflow-hidden flex flex-col md:flex-row border border-white/70">
-
+      <Toaster />
       {/* LEFT: Image Slider */}
       <AuthImageSlider slides={slides} minHeight="620px" />
 
@@ -53,11 +101,12 @@ const SignIn = () => {
               </Link>
             </p>
           </div>
+           <p className="text-[16px] bg-amber-300 rounded-md text-center text-red-500 font-medium leading-relaxed">{errors}</p>
 
           {/* Form */}
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-            <AuthFormInput label="Email Address" type="email" placeholder="you@example.com" name="email" />
-            <AuthFormInput label="Password" type="password" placeholder="Enter your password" name="password" />
+          <form className="space-y-5" onSubmit={handleLogin}>
+            <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,email:e.target.value})),setErrors('')}} label="Email Address" type="email" placeholder="you@example.com" name="email" />
+            <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,password:e.target.value})),setErrors('')}} label="Password" type="password" placeholder="Enter your password" name="password" />
 
             {/* Remember & Forgot */}
             <div className="flex justify-between items-center pt-0.5">

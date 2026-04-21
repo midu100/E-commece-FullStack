@@ -5,6 +5,7 @@ import AuthImageSlider from "@/components/auth/AuthImageSlider";
 import AuthFormInput from "@/components/auth/AuthFormInput";
 import AuthButton from "@/components/auth/AuthButton";
 import AuthSocialSection from "@/components/auth/AuthSocialSection";
+import toast, { Toaster } from 'react-hot-toast';
 
 // leftside content image/slider
 const slides = [
@@ -26,15 +27,45 @@ const slides = [
 ];
 
 const SignUp = () => {
-  const [formData,setFormData] = useState({fullName:'',email:'',password:'',phone:'',address:'',errors:'',success:''})
+  const [formData,setFormData] = useState({fullName:'',email:'',password:'',phone:'',address:''})
+  const [errors, setErrors] = useState('');
+  const [success, setSuccess] = useState('');
   
 
-  const handleSubmit =(e)=>{
+  const handleSubmit = async(e)=>{
     e.preventDefault()
+    try {
+      if(!formData.fullName) return setErrors('FullName is required.')
+      if(!formData.email) return setErrors('email is required.')
+      if(!formData.password) return setErrors('Password is required.')
 
-    if(!formData.fullName) return setFormData((p)=>({...p,errors:'FullName is required.'}))
-    if(!formData.email) return setFormData((p)=>({...p,errors:'Email is required.'}))
-    if(!formData.password) return setFormData((p)=>({...p,errors:'Password is required.'}))
+      const res = await fetch('http://localhost:8000/auth/signup',{
+        method :'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+      const data = await res.json()
+
+      if(!res.ok){
+        if(data.message ==='Email is required.' || data.message === 'Please enter valid email.' || data.message === 'Email already exists.') setErrors(data.message)
+        if(data.message ==='Password is required.' || data.message === 'Please choose strong password.(Atleast 1 letter & 1 number)') setErrors(data.message)
+
+        return
+      }
+    
+      toast.success(data.message,{
+        duration: 4000,
+       position: 'top-center',
+      });
+
+      setTimeout(() => {
+        // reditect to OTP Verification page
+      }, 2000);
+      
+    } 
+    catch (error) {
+      console.log(error)  
+    }
 
     
 
@@ -43,7 +74,7 @@ const SignUp = () => {
 
   return (
     <div className="w-full max-w-[1060px] bg-white/60 backdrop-blur-2xl rounded-[32px] shadow-[0_30px_80px_-20px_rgba(100,60,180,0.15)] overflow-hidden flex flex-col md:flex-row border border-white/70">
-
+       <Toaster />
       {/* LEFT: Image Slider */}
       <AuthImageSlider slides={slides} minHeight="740px" />
 
@@ -69,19 +100,19 @@ const SignUp = () => {
               </Link>
             </p>
           </div>
-          <p className="text-[16px] text-center text-red-500 font-medium leading-relaxed">{formData.errors}</p>
+          <p className="text-[16px] bg-amber-300 rounded-md text-center text-red-500 font-medium leading-relaxed">{errors}</p>
 
           {/* Form */}
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-            <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,fullName:e.target.value})),setFormData((p)=>({...p,errors:''}))}} label="Full Name" type="text" placeholder="John Doe" name="fullName" />
-            <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,email:e.target.value})),setFormData((p)=>({...p,errors:''}))}} label="Email Address" type="email" placeholder="you@example.com" name="email" />
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,fullName:e.target.value})),setErrors('')}} label="Full Name" type="text" placeholder="John Doe" name="fullName" />
+            <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,email:e.target.value})),setErrors('')}} label="Email Address" type="email" placeholder="you@example.com" name="email" />
 
             {/* Phone & Address - Side by Side */}
             <div className="grid grid-cols-2 gap-3">
-              <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,password:e.target.value})),setFormData((p)=>({...p,errors:''}))}} label="Password" type="password" placeholder="Enter your password" name="password" />
-              <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,phone:e.target.value})),setFormData((p)=>({...p,errors:''}))}} label="Phone" type="tel" placeholder="+880 1XXX..." name="phone" />
+              <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,password:e.target.value})),setErrors('')}} label="Password" type="password" placeholder="Enter your password" name="password" />
+              <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,phone:e.target.value})),setErrors('')}} label="Phone" type="tel" placeholder="+880 1XXX..." name="phone" />
             </div>
-              <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,address:e.target.value})),setFormData((p)=>({...p,errors:''}))}} label="Address" type="text" placeholder="Dhaka, BD" name="address" />
+              <AuthFormInput onChange={(e)=>{setFormData((p)=>({...p,address:e.target.value})),setErrors('')}} label="Address" type="text" placeholder="Dhaka, BD" name="address" />
 
 
             {/* Terms */}
@@ -98,7 +129,7 @@ const SignUp = () => {
             </div>
 
             <div className="pt-1.5">
-              <AuthButton onClick={handleSubmit} text="Create account" />
+              <AuthButton text="Create account" />
             </div>
           </form>
 

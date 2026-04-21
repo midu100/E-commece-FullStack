@@ -9,7 +9,7 @@ export default function AuthButton({ text, onClick, type = "submit", icon, disab
       disabled={disabled}
       className={`
         relative group flex w-full items-center justify-center gap-3 overflow-hidden 
-        rounded-2xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600
+        rounded-2xl bg-gradient-to-r from-black via-red-500 to-black
         px-6 py-4 text-[13px] font-bold text-white 
         shadow-[0_8px_30px_rgba(139,92,246,0.35)] transition-all duration-300 
         hover:shadow-[0_12px_40px_rgba(139,92,246,0.5)] hover:scale-[1.01]
