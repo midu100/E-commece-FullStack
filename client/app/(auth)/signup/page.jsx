@@ -6,6 +6,7 @@ import AuthFormInput from "@/components/auth/AuthFormInput";
 import AuthButton from "@/components/auth/AuthButton";
 import AuthSocialSection from "@/components/auth/AuthSocialSection";
 import toast, { Toaster } from 'react-hot-toast';
+import { redirect } from "next/navigation";
 
 // leftside content image/slider
 const slides = [
@@ -60,7 +61,8 @@ const SignUp = () => {
 
       setTimeout(() => {
         // reditect to OTP Verification page
-      }, 2000);
+        redirect(`/verify-email/?email=${formData.email}`)
+      }, 3500);
       
     } 
     catch (error) {
