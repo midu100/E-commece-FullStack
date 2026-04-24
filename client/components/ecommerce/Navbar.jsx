@@ -52,7 +52,7 @@ const Navbar = () => {
                           <FaSearch />
                         </button>
 
-                        <Link href={'/'}>
+                        <Link href={'/signin'}>
                           <FaUser />
                         </Link>
 

@@ -36,7 +36,7 @@ const VerifyEmail = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
-  console.log(otp)
+  
   const handleOtp = async() => {
     try {
     
@@ -71,6 +71,32 @@ const VerifyEmail = () => {
 
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+
+      if (!email) return setErrors("Email is missing.");
+
+      const res = await fetch('http://localhost:8000/auth/resendotp', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        if(data.message === 'Invalid request') setErrors('Invalid request')
+      }
+
+      toast.success(data.message, {
+        duration: 5000,
+        position: 'top-center',
+      });
+    } catch (error) {
+      console.log(error);
+      setErrors('Something went wrong while resending OTP');
     }
   };
 
@@ -136,14 +162,18 @@ const VerifyEmail = () => {
             {/* OTP Input Component */}
             <AuthOtpInput onChange={(e) => {setOtp(e.target.value),setErrors('')}} length={4} />
 
-            {/* Timer & Resend */}
-            <div className="text-center">
+            {/* Resend OTP */}
+            <div className="text-center flex justify-center items-center gap-2">
               <p className="text-[13px] text-gray-400 font-medium">
-                Resend code in{" "}
-                <span className="text-violet-600 font-bold tabular-nums">
-                  00:59
-                </span>
+                Didn&apos;t receive the code?
               </p>
+              <button
+                type="button"
+                onClick={handleResendOtp}
+                className="text-[13px] text-violet-600 font-bold hover:text-violet-700 transition-colors underline underline-offset-4 decoration-violet-300"
+              >
+                Resend OTP
+              </button>
             </div>
 
             {/* Verify Button */}

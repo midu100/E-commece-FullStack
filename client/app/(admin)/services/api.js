@@ -6,8 +6,11 @@ export const adminApiService = createApi({
         getProducts : build.query({
             query : ()=> '/product/allproducts'
         }),
+        getCategories : build.query({
+            query : ()=>'/category/allcategories'
+        })
 
     })
 })
 
-export const {useGetProductsQuery }= adminApiService
+export const {useGetProductsQuery,useGetCategoriesQuery }= adminApiService 
