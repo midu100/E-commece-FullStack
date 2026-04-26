@@ -31,7 +31,7 @@ export async function proxy(request) {
 
     } catch (error) {
       console.log('JWT Error:', error.message);
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/signin', request.url));
     }
   }
 

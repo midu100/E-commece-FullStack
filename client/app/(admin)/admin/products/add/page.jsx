@@ -1,179 +1,206 @@
 "use client";
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useState } from "react";
+import Link from "next/link";
 
 const AddProduct = () => {
-  const [hasMultipleOptions, setHasMultipleOptions] = useState(true);
+  const [variants,setVariants] = useState([{id : Date.now(),sku:`KN-${Math.floor(Math.random()*1000)}`,color:'',size:'',stock:'' }])
+  const [newProduct,setNewProduct] = useState({title:'',slug:'',description:'',category:'',price:'',discountPercentage:'',variants:'',tags:''})
+
+  const handleAddNewVariants = ()=>{
+    const existVariant = [...variants]
+    existVariant.push({
+      id: Date.now(), sku:`KN-${Math.floor(Math.random()*1000)}`,color:'',size:'',stock:''
+    })
+    setVariants(existVariant)
+  }
+  
+  
+  const handleCancelVriants = (id)=>{
+    
+    if(variants.length > 1){
+      const updatedVariantList = variants.filter((item)=>item.id !== id)
+      setVariants(updatedVariantList)
+    }
+
+
+  }
+
+  const handleInputVariant = (id,feild,value)=>{
+    console.log(id,feild,value)
+    let variantInputChange = variants.map((item)=>{
+      if(item.id == id){
+        item[feild] = value
+      }
+      return item
+    })
+   setVariants(variantInputChange)
+
+  }
+
+  console.log(variants)
+
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
+
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <Link href="/admin/products" className="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors flex items-center gap-1 mb-1">
-            &larr; Back
-          </Link>
-          <h2 className="text-[22px] font-bold text-slate-800">Add Product</h2>
-        </div>
-        <div className="flex items-center gap-3">
-          <button className="px-5 py-2 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+      <div className="flex justify-between items-center">
+        <Link
+          href="/admin/products"
+          className="text-sm font-semibold text-slate-500 hover:text-blue-600"
+        >
+          ← Back
+        </Link>
+
+        <div className="flex gap-3">
+          <button className="px-5 py-2 text-sm font-semibold border border-slate-200 rounded-lg hover:bg-slate-50">
             Cancel
           </button>
-          <button className="px-5 py-2 text-sm font-bold text-white bg-blue-600 border border-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-600/30">
-            Save
+          <button className="px-5 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm">
+            Save Product
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (Main Content) */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* Information */}
-          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-6">Information</h3>
-            <div className="space-y-5">
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Product Name</label>
-                <input 
-                  type="text" 
-                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-400"
-                  placeholder="Summer T-Shirt"
-                />
-              </div>
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Product Description</label>
-                <textarea 
-                  rows="4"
-                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-400 resize-none"
-                  placeholder="Product description"
-                ></textarea>
-              </div>
-            </div>
+      {/* Card */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-6">
+
+        {/* Row 1 */}
+        <div className="flex flex-col md:flex-row gap-5">
+          <div className="flex-1">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-2">Title</label>
+            <input onChange={(e)=>setNewProduct((prev)=>({...prev,title:e.target.valu}))} type="text" placeholder="Enter product title"
+              className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition"
+            />
           </div>
 
-          {/* Images */}
-          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-6">Images</h3>
-            <div className="border border-dashed border-slate-300 rounded-xl p-10 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer">
-               <button className="px-4 py-2 bg-white border border-slate-200 rounded text-blue-600 font-semibold text-sm mb-2 shadow-sm">Add File</button>
-               <p className="text-xs font-semibold text-slate-400">Or drag and drop files</p>
-            </div>
-          </div>
-
-          {/* Price */}
-          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-6">Price</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Product Price</label>
-                <input 
-                  type="text" 
-                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400"
-                  placeholder="Enter price"
-                />
-              </div>
-              <div>
-                <label className="block text-[13px] font-semibold text-slate-600 mb-2">Discount Price</label>
-                <input 
-                  type="text" 
-                  className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400"
-                  placeholder="Price at Discount"
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-5 bg-blue-100 rounded-full relative cursor-pointer">
-                <div className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform translate-x-5"></div>
-              </div>
-              <span className="text-sm font-semibold text-slate-600">Add tax for this product</span>
-            </div>
-          </div>
-
-          {/* Variants */}
-          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-6">Variants</h3>
-            
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">SKU</label>
-                  <input type="text" className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 bg-white" placeholder="e.g. TSH-001" />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">Size</label>
-                  <select className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 text-slate-700 bg-white">
-                    <option>S</option>
-                    <option>M</option>
-                    <option>L</option>
-                    <option>XL</option>
-                    <option>XXL</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">Color</label>
-                  <input type="text" className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 bg-white" placeholder="e.g. Red" />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-2">Stock</label>
-                  <input type="number" className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 bg-white" placeholder="0" />
-                </div>
-              </div>
-              <button className="text-sm font-bold text-blue-600 mt-2 hover:text-blue-700 flex items-center gap-1">+ Add Another Variant</button>
-            </div>
-          </div>
-          
-        </div>
-
-        {/* Right Column (Sidebar form items) */}
-        <div className="space-y-6">
-          {/* Categories */}
-          <div className="bg-white p-6 rounded-xl border border-blue-500 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-4">Categories</h3>
-            <div className="space-y-3">
-              {['Women', 'Men', 'T-Shirt', 'Hoodie', 'Dress'].map((cat) => (
-                <label key={cat} className="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
-                  <span className="text-sm font-semibold text-slate-600">{cat}</span>
-                </label>
-              ))}
-            </div>
-            <button className="text-sm font-bold text-blue-600 mt-5 hover:text-blue-700">Create New</button>
-          </div>
-
-
-          {/* SEO Settings */}
-          <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-            <h3 className="font-bold text-slate-800 mb-4">SEO Settings</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-500 mb-2">Title</label>
-                <input 
-                  type="text" 
-                  className="w-full px-4 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-500 mb-2">Description</label>
-                <textarea 
-                  rows="3"
-                  className="w-full px-4 py-2 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 resize-none"
-                ></textarea>
-              </div>
-            </div>
+          <div className="flex-1">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-2">Slug</label>
+            <input onChange={(e)=>setNewProduct((prev)=>({...prev,slug:e.target.valu}))} type="text" placeholder="product-slug"
+              className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition"
+            />
           </div>
         </div>
+
+        {/* Row 2 */}
+        <div className="flex flex-col md:flex-row gap-5">
+          <div className="flex-1">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-2">Category</label>
+            <select onChange={(e)=>setNewProduct((prev)=>({...prev,size:e.target.valu}))} className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-600">
+              <option>Streetwear</option>
+              <option>Men</option>
+              <option>Women</option>
+              <option>Hoodie</option>
+            </select>
+          </div>
+
+          <div className="flex-1">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-2">Price</label>
+            <input onChange={(e)=>setNewProduct((prev)=>({...prev,price:e.target.valu}))} type="number" placeholder="100"
+              className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition"
+            />
+          </div>
+        </div>
+
+        {/* Row 3 */}
+        <div className="flex flex-col md:flex-row gap-5">
+          <div className="flex-1">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-2">Discount Price</label>
+            <input onChange={(e)=>setNewProduct((prev)=>({...prev,discountPercentage:e.target.valu}))} type="number" placeholder="80"
+              className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition"
+            />
+          </div>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-[13px] font-semibold text-slate-600 mb-2">Description</label>
+          <textarea onChange={(e)=>setNewProduct((prev)=>({...prev,description:e.target.valu}))} rows={4}
+            placeholder="Write product description"
+            className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition resize-none"
+          />
+        </div>
+
+        {/* Tags + Thumbnail */}
+        <div className="flex flex-col md:flex-row gap-5">
+          <div className="flex-1">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-2">Tags (comma separated)</label>
+            <input onChange={(e)=>setNewProduct((prev)=>({...prev,tags:e.target.valu}))} type="text"
+              placeholder="e.g hoodie, winter, street"
+              className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition"
+            />
+          </div>
+
+          <div className="flex-1">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-2">Upload Thumbnail</label>
+            <input type="file"
+              className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition"
+            />
+          </div>
+        </div>
+
+        {/* Images */}
+        <div>
+          <label className="block text-[13px] font-semibold text-slate-600 mb-2">Upload Images</label>
+          <input multiple type="file"
+            className="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder-slate-400 transition"
+          />
+        </div>
+
+        {/* Variants */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-[13px] font-semibold text-slate-600 mb-3">Variant Sample</label>
+
+            <button onClick={handleAddNewVariants} className="px-6 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm">
+              Add Variants +
+            </button>
+          </div>
+
+          {
+            variants.map((item)=>(
+
+              <div key={item.id} className="flex flex-wrap gap-4 mb-2">
+                <input onChange={(e)=>handleInputVariant(item.id,'sku',e.target.value)} type="text" placeholder="SKU"
+                  className="flex-1 min-w-[150px] px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+                <input  onChange={(e)=>handleInputVariant(item.id,'color',e.target.value)} type="text" placeholder="Color"
+                  className="flex-1 min-w-[120px] px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+                <select  onChange={(e)=>handleInputVariant(item.id,'size',e.target.value)} className="flex-1 min-w-[120px] px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                  <option>S</option>
+                  <option>M</option>
+                  <option>L</option>
+                  <option>XL</option>
+                </select>
+                <input  onChange={(e)=>handleInputVariant(item.id,'stock',e.target.value)} type="number" placeholder="Stock"
+                  className="flex-1 min-w-[100px] px-4 py-2.5 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+                {
+                  variants.length > 1 && (
+                    <button onClick={(e)=>handleCancelVriants(item.id)} className="px-6 py-2 text-sm font-semibold bg-red-600 text-white rounded-lg hover:bg-red-700 shadow-sm">x</button>
+                  )
+                }
+
+              </div>
+
+            ))
+          }
+
+        </div>
+
       </div>
 
-      {/* Bottom Actions */}
-      <div className="flex justify-end gap-3 pt-6">
-        <button className="px-6 py-2 text-sm font-bold text-blue-600 bg-white border border-blue-600 rounded-lg hover:bg-slate-50 transition-colors">
+      {/* Bottom */}
+      <div className="flex justify-end gap-3">
+        <button type="reset" className="px-6 py-2 text-sm font-semibold border border-slate-200 rounded-lg hover:bg-slate-50">
           Cancel
         </button>
-        <button className="px-6 py-2 text-sm font-bold text-white bg-blue-600 border border-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm shadow-blue-600/30">
-          Save
+        <button className="px-6 py-2 text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm">
+          Save Product
         </button>
       </div>
+
     </div>
   );
 };
