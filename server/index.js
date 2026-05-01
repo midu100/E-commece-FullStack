@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const dbConfig = require("./dbConfig");
 const route = require("./routes");
@@ -17,9 +17,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "http://localhost:3000", // ❗ MUST be exact
+  origin: "http://localhost:3000",
   credentials: true
 }));
+
 dbConfig();
 cloudinaryConfig()
 app.use(route);

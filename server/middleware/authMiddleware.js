@@ -3,11 +3,12 @@ const { verifyToken } = require("../utils/helpers")
 const authMiddleware = async(req,res,next)=>{
     try {
         const token =req.cookies
+        console.log(token)  
 
-        if(!token['X_AS-TOKEN']) return res.status(400).send({message : 'Token missing'})
+        if(!token['X_AS-TOKEN']) return res.status(401).send({message : 'Token missing..'})
         
         const decoded = verifyToken(token['X_AS-TOKEN'])
-        if(!decoded) return res.status(400).send({message : 'Invalidd request.'})
+        if(!decoded) return res.status(401).send({message : 'Invalidd request.'})
         req.user = decoded
         next()
     } 
@@ -16,5 +17,6 @@ const authMiddleware = async(req,res,next)=>{
         console.log(error)
     }
 }
+
 
 module.exports = {authMiddleware}
