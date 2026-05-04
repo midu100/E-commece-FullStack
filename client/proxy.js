@@ -8,7 +8,7 @@ export async function proxy(request) {
 
   // Protect only admin routes
   if (pathname.startsWith('/admin')) {
-    const token = request.cookies.get('X_AS-TOKEN')?.value;
+    const token = request.cookies.get('R_FS-TOKEN')?.value;
 
     if (!token) {
       return NextResponse.redirect(new URL('/signin', request.url));
@@ -31,6 +31,8 @@ export async function proxy(request) {
 
     } catch (error) {
       console.log('JWT Error:', error.message);
+      request.cookies.delete("X_AS-TOKEN");
+      request.cookies.delete("R_FS-TOKEN");
       return NextResponse.redirect(new URL('/signin', request.url));
     }
   }

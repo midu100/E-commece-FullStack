@@ -2,7 +2,17 @@ import Image from "next/image";
 import React from "react";
 import SingleFeature from "@/components/shared/SingleFeature";
 
-const FeaturedProducts = () => {
+const FeaturedProducts = async() => {
+  const res = await fetch(`http://localhost:8000/product/allproducts`,{
+    next :{
+      revalidate : 5000
+    }
+  })
+  const data = await res.json()
+
+  console.log(data.productList)
+
+
   return (
     <section className="m-16">
       <div className="container">
@@ -16,10 +26,15 @@ const FeaturedProducts = () => {
 
         {/* Row */}
         <div className="row flex flex-wrap justify-between gap-y-10">
-          <SingleFeature name={"MEN'S HALF SLEEVE CASUAL SHIRT"} price={'1699.00'} src={'/p1.jpg'}/>
-          <SingleFeature name={"MEN'S FULL SLEEVE CASUAL SHIRT"} price={'1699.00'} src={'/p2.jpg'}/>
+          {
+            data?.productList?.map((item,i)=>(
+              <SingleFeature name={item.title} price={item.price} src={item.thumbnail}/>
+
+            ))
+          }
+          {/* <SingleFeature name={"MEN'S FULL SLEEVE CASUAL SHIRT"} price={'1699.00'} src={'/p2.jpg'}/>
           <SingleFeature name={"MEN'S POLO"} price={'1299.00'} src={'/p3.jpg'}/>
-          <SingleFeature name={"DROP SHOULDER"} price={'1499.00'} src={'/p4.jpg'}/>
+          <SingleFeature name={"DROP SHOULDER"} price={'1499.00'} src={'/p4.jpg'}/> */}
         </div>
       </div>
     </section>

@@ -134,6 +134,7 @@ const createProduct = async (req, res) => {
 
 const getProductList = async (req, res) => {
   try {
+    console.log('hit from client')
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skipIndex = (page - 1) * limit;
