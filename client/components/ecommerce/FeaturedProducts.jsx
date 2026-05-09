@@ -1,16 +1,17 @@
 import Image from "next/image";
 import React from "react";
 import SingleFeature from "@/components/shared/SingleFeature";
+import { apiClient } from "@/lib/apiClient";
 
 const FeaturedProducts = async() => {
-  const res = await fetch(`http://localhost:8000/product/allproducts`,{
+  const res = await apiClient.get(`/product/allproducts`,{
     next :{
-      revalidate : 5000
+      revalidate : 60 * 5
     }
   })
-  const data = await res.json()
+  // const data = await res.json()
 
-  console.log(data.productList)
+  console.log(res)
 
 
   return (
@@ -27,8 +28,8 @@ const FeaturedProducts = async() => {
         {/* Row */}
         <div className="row flex flex-wrap justify-between gap-y-10">
           {
-            data?.productList?.map((item,i)=>(
-              <SingleFeature name={item.title} price={item.price} src={item.thumbnail}/>
+            res?.productList?.map((item,i)=>(
+              <SingleFeature key={i} name={item.title} price={item.price} src={item.thumbnail}/>
 
             ))
           }

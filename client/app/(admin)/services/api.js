@@ -30,9 +30,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const adminApiService = createApi({
   baseQuery: baseQueryWithReauth,
+  tagTypes : ["product"],
   endpoints: (build) => ({
     getProducts: build.query({
       query: () => "/product/allproducts",
+      providesTags : ["product"]
     }),
     getCategories: build.query({
       query: () => "/category/allcategories",
@@ -43,6 +45,7 @@ export const adminApiService = createApi({
         method: "POST",
         body: productData,
       }),
+      providesTags:["product"]
     }),
   }),
 });
