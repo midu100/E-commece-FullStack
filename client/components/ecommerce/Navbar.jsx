@@ -10,9 +10,10 @@ const Navbar = () => {
     const [open, setOpen] = useState(false);
 
     const navItem = [
-        { Name: "Mens", path: '/about' },
-        { Name: "Womens", path: '/' },
-        { Name: "Kids", path: '/' },
+        { Name: "Shop All", path: '/shop' },
+        { Name: "Mens", path: '/shop' },
+        { Name: "Womens", path: '/shop' },
+        { Name: "Kids", path: '/shop' },
         { Name: "New Arrival", path: '/' },
         { Name: "Top Selling", path: '/' },
     ]
