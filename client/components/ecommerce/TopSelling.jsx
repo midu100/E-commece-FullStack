@@ -16,24 +16,28 @@ const TopSelling = () => {
           {/* Row */}
           <div className="row flex flex-wrap justify-between gap-y-10">
             <SingleProduct
+              className="w-full sm:w-[48%] lg:w-[23.5%]"
               name={"MEN'S HALF SLEEVE CASUAL SHIRT"}
               price={"1599.00"}
               src={"/p1.jpg"}
               cngPic={"/cat1.jpg"}
             />
             <SingleProduct
+              className="w-full sm:w-[48%] lg:w-[23.5%]"
               name={"MEN'S HALF SLEEVE CASUAL SHIRT"}
               price={"1599.00"}
               src={"/p2.jpg"}
               cngPic={"/cat1.jpg"}
             />
             <SingleProduct
+              className="w-full sm:w-[48%] lg:w-[23.5%]"
               name={"MEN'S HALF SLEEVE CASUAL SHIRT"}
               price={"1599.00"}
               src={"/p3.jpg"}
               cngPic={"/cat1.jpg"}
             />
             <SingleProduct
+              className="w-full sm:w-[48%] lg:w-[23.5%]"
               name={"MEN'S HALF SLEEVE CASUAL SHIRT"}
               price={"1599.00"}
               src={"/p4.jpg"}

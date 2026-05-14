@@ -1,12 +1,18 @@
 import Image from "next/image";
 import React from "react";
 
-const SingleProduct = ({ name, price, src, cngPic }) => {
+const SingleProduct = ({
+  name,
+  price,
+  src,
+  cngPic,
+  className = "",
+}) => {
   return (
     <div
       data-aos="fade-up"
       data-aos-duration="1500"
-      className="group w-full"
+      className={`group ${className}`}
     >
       <div className="w-full bg-[#f5f5f5] rounded-2xl overflow-hidden shadow-sm">
 
@@ -18,7 +24,7 @@ const SingleProduct = ({ name, price, src, cngPic }) => {
             data-aos="zoom-in"
             data-aos-duration="1000"
             src={src}
-            alt={name}
+            alt={'img'}
             fill
             className="object-cover transition-all duration-500 group-hover:opacity-0 group-hover:scale-105"
           />
@@ -26,7 +32,7 @@ const SingleProduct = ({ name, price, src, cngPic }) => {
           {/* Hover Image */}
           <Image
             src={cngPic}
-            alt={`${name} hover`}
+            alt={`img hover`}
             fill
             className="object-cover opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-105"
           />

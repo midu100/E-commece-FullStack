@@ -11,8 +11,8 @@ export default async function ShopPage({searchParams}) {
       }
   })
   const categories = categoryRes?.categories
-  const {category} = await searchParams
-  const res = await apiClient.get(`/product/allproducts${category ? `?category=${category}` : ""}`,{
+  const {category,search} = await searchParams
+  const res = await apiClient.get(`/product/allproducts${category ? `?category=${category}` : ""}${search ? `?search=${search}` : ""}`,{
       next :{
         revalidate : 60 * 5
       }
@@ -21,7 +21,7 @@ export default async function ShopPage({searchParams}) {
   
     // const data = await res.json()
   
-    console.log(category)
+    console.log(res.productList.length)
   return (
     <section className="min-h-screen bg-white font-sans">
 
@@ -48,7 +48,7 @@ export default async function ShopPage({searchParams}) {
         <div className="flex gap-8">
 
           {/* Left Sidebar */}
-          <ShopSidebar cateHref={''} cateName={categories} />
+          <ShopSidebar cateName={categories} />
 
           {/* Right: Products Grid */}
           <div className="flex-1">
