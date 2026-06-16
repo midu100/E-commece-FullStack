@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import {
   FaUser,
@@ -9,10 +9,17 @@ import {
   FaBars,
   FaTimes
 } from "react-icons/fa";
+import SuggestionBox from '../shared/SuggestionBox';
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 const Navbar = () => {
 
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [products, setProducts] = useState([]);
+  const [showBox, setShowBox] = useState(false);
+  const boxRef = useRef(null);
 
   const navItem = [
     { Name: "Shop All", path: '/shop' },
@@ -22,6 +29,39 @@ const Navbar = () => {
     { Name: "New Arrival", path: '/' },
     { Name: "Top Selling", path: '/' },
   ]
+
+  // ====== Simple Debounce — useEffect cleanup ======
+  useEffect(() => {
+    if (!query.trim()) {
+      setProducts([]);
+      setShowBox(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/product/allproducts?search=${query}&limit=6`);
+        const data = await res.json();
+        setProducts(data?.productList || []);
+        setShowBox(true);
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // ====== বাইরে click → suggestion বন্ধ ======
+  useEffect(() => {
+    const handler = (e) => {
+      if (boxRef.current && !boxRef.current.contains(e.target)) {
+        setShowBox(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   return (
     <>
@@ -57,24 +97,42 @@ const Navbar = () => {
               }
             </ul>
 
-            {/* Search Form */}
-            <form action={'/shop'} className='hidden md:flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full overflow-hidden'>
+            {/* Search + Suggestion */}
+            <div className="relative hidden md:block" ref={boxRef}>
 
-              <input
-                type="search"
-                name='search'
-                placeholder='Search...'
-                className='bg-transparent text-white placeholder:text-gray-300 outline-none px-4 py-2 w-[180px]'
-              />
+              {/* আগের মতোই form action="/shop" */}
+              <form action={'/shop'} className='flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full overflow-hidden'>
 
-              <button
-                type='submit'
-               className='bg-white text-black text-[13px] font-medium px-5 py-2 rounded-full hover:bg-gray-200 transition-all duration-300'
-              >
-                Search
-              </button>
+                <input
+                  type="search"
+                  name='search'
+                  placeholder='Search...'
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => query.trim() && products.length > 0 && setShowBox(true)}
+                  autoComplete="off"
+                  className='bg-transparent text-white placeholder:text-gray-300 outline-none px-4 py-2 w-[180px]'
+                />
 
-            </form>
+                <button
+                  type='submit'
+                 className='bg-white text-black text-[13px] font-medium px-5 py-2 rounded-full hover:bg-gray-200 transition-all duration-300'
+                >
+                  Search
+                </button>
+
+              </form>
+
+              {/* Suggestion Box — props দিয়ে data pass */}
+              {showBox && (
+                <SuggestionBox
+                  products={products}
+                  searchQuery={query}
+                  onClose={() => { setShowBox(false); setQuery(""); }}
+                />
+              )}
+
+            </div>
 
             {/* Right Icons */}
             <div className='flex items-center gap-[20px] text-white shrink-0'>
@@ -112,10 +170,11 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Search */}
-        <form className='mx-5 mt-5 flex items-center bg-white/10 border border-white/20 rounded-full overflow-hidden'>
+        <form action={'/shop'} className='mx-5 mt-5 flex items-center bg-white/10 border border-white/20 rounded-full overflow-hidden'>
 
           <input
             type="text"
+            name='search'
             placeholder='Search...'
             className='w-full bg-transparent text-white placeholder:text-gray-300 outline-none px-4 py-2'
           />

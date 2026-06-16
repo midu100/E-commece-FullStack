@@ -26,6 +26,55 @@ body {
 }
 
 
+/* ========== SEARCH SUGGESTION BOX ========== */
+
+.suggestion-box {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: -60px;
+  width: 560px;
+  max-height: 480px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 18px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.15),
+    0 10px 25px rgba(0, 0, 0, 0.08);
+  z-index: 9999;
+  padding: 20px;
+  animation: suggestionSlideIn 0.25s ease-out;
+}
+
+@keyframes suggestionSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.suggestion-box::-webkit-scrollbar { width: 5px; }
+.suggestion-box::-webkit-scrollbar-track { background: transparent; }
+.suggestion-box::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+.suggestion-product-card {
+  display: block;
+  padding: 8px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.suggestion-product-card:hover {
+  background: #f9f9f9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 
 /* From Uiverse.io by ferlagher 
 button {

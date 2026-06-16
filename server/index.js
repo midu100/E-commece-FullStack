@@ -9,10 +9,12 @@ const { generateResetToken } = require("./utils/helpers");
 const cloudinaryConfig = require("./utils/cloudinaryConfig");
 const { webhook } = require("./controllers/orderController");
 const port = 8000;
+const dns = require("dns");
 
 
 app.post('/webhook', express.raw({type: 'application/json'}), webhook);
 app.use(express.json());
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 

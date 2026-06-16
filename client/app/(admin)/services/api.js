@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8000",
+  baseUrl: "https://e-commece-fullstack.onrender.com",
   credentials: "include",
 });
 
@@ -47,6 +47,10 @@ export const adminApiService = createApi({
       }),
       providesTags:["product"]
     }),
+
+    getUsers : build.query({
+      query : ()=> `/users/get`,
+    })
   }),
 });
 
@@ -54,4 +58,5 @@ export const {
   useGetProductsQuery,
   useGetCategoriesQuery,
   useCreateNewProductMutation,
+  useGetUsersQuery
 } = adminApiService;

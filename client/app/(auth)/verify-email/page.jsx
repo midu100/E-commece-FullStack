@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import AuthImageSlider from "@/components/auth/AuthImageSlider";
 import AuthButton from "@/components/auth/AuthButton";
@@ -29,7 +29,7 @@ const slides = [
   },
 ];
 
-const VerifyEmail = () => {
+const VerifyEmailContent = () => {
 
   const [otp, setOtp] = useState("");
   const [errors, setErrors] = useState("");
@@ -220,5 +220,11 @@ const VerifyEmail = () => {
     </div>
   );
 };
+
+const VerifyEmail = () => (
+  <Suspense fallback={<div className="w-full h-screen flex items-center justify-center"><p className="text-gray-400">Loading...</p></div>}>
+    <VerifyEmailContent />
+  </Suspense>
+);
 
 export default VerifyEmail;

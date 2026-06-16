@@ -3,7 +3,7 @@ const { verifyToken } = require("../utils/helpers")
 const authMiddleware = async(req,res,next)=>{
     try {
         const token =req.cookies
-        console.log(token)  
+        // console.log(token)  
 
         if(!token['X_AS-TOKEN']) return res.status(401).send({message : 'Token missing..'})
         
