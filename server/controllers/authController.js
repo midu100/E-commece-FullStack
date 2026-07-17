@@ -130,7 +130,7 @@ const signIn = async (req,res)=>{
         
         res.cookie('X_AS-TOKEN',accToken)
         res.cookie('R_FS-TOKEN',refToken)
-        res.status(200).send({message : 'Login Successful.'})
+        res.status(200).send({message : 'Login Successful.', role: existUser.role})
 
 
     } 

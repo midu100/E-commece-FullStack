@@ -6,7 +6,7 @@ import AuthFormInput from "@/components/auth/AuthFormInput";
 import AuthButton from "@/components/auth/AuthButton";
 import AuthSocialSection from "@/components/auth/AuthSocialSection";
 import toast, { Toaster } from 'react-hot-toast';
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 
 const slides = [
@@ -30,6 +30,7 @@ const slides = [
 const SignIn = () => {
   const [formData,setFormData] = useState({email:'',password:''})
   const [errors, setErrors] = useState('');
+  const router = useRouter();
 
   const handleLogin = async(e)=>{
     e.preventDefault()
@@ -60,8 +61,12 @@ const SignIn = () => {
       });
 
       setTimeout(()=>{
-        redirect('/')
-      },3000)
+        if(data.role === 'admin'){
+          router.push('/admin/dashboard')
+        } else {
+          router.push('/')
+        }
+      },1500)
 
 
     } 

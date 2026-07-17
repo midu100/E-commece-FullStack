@@ -148,7 +148,7 @@ const Products = () => {
                     <td className="py-3 px-6 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <Link
-                          href={`/admin/products/edit/${row._id}`}
+                          href={`/admin/products/edit/${row.slug}`}
                           className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
                           title="Edit Product"
                         >

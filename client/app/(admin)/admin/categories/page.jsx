@@ -62,9 +62,12 @@ const Categories = () => {
 
               {/* Hover Edit Button */}
               <div className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                <button className="bg-white text-blue-600 px-4 py-2 rounded shadow-lg flex items-center gap-2 font-bold text-sm">
+                <Link
+                  href={`/admin/categories/edit/${cat._id}`}
+                  className="bg-white text-blue-600 px-4 py-2 rounded shadow-lg flex items-center gap-2 font-bold text-sm hover:bg-slate-50 transition"
+                >
                   <MdEdit size={16} /> Edit
-                </button>
+                </Link>
               </div>
             </div>
 

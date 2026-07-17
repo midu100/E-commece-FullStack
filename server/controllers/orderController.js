@@ -1,5 +1,6 @@
 const cartSchema = require("../models/cartSchema");
 const orderSchema = require("../models/orderSchema");
+const productSchema = require("../models/productSchema");
 const responseHandler = require("../utils/responseHandler");
 const stripe = require("stripe")(`${process.env.STRIPE_SEC_KEY}`);
 const endpointSecret = process.env.STRIPE_SIGNIN_SEC;
@@ -107,4 +108,99 @@ const webhook = async (req, res) => {
   res.send();
 };
 
-module.exports = { checkOut, webhook };
+const getAllOrders = async (req, res) => {
+  try {
+    const { status } = req.query;
+    const filter = {};
+    if (status && status !== "All") {
+      filter.status = status;
+    }
+    const orders = await orderSchema
+      .find(filter)
+      .populate("user", "fullName email phone")
+      .sort({ createdAt: -1 });
+
+    return responseHandler.success(res, "Orders fetched successfully", orders);
+  } catch (error) {
+    console.log(error);
+    return responseHandler.error(res, error.message);
+  }
+};
+
+const getOrderDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await orderSchema
+      .findById(id)
+      .populate("user", "fullName email phone address")
+      .populate("items.product", "title price thumbnail");
+
+    if (!order) {
+      return responseHandler.error(res, "Order not found", 404);
+    }
+
+    return responseHandler.success(res, "Order details fetched successfully", order);
+  } catch (error) {
+    console.log(error);
+    return responseHandler.error(res, error.message);
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, paymentStatus } = req.body;
+
+    const order = await orderSchema.findById(id);
+    if (!order) {
+      return responseHandler.error(res, "Order not found", 404);
+    }
+
+    // 1. When order is Delivered — deduct stock from product variants
+    if (status === "Delivered" && order.status !== "Delivered") {
+      for (const item of order.items) {
+        const product = await productSchema.findById(item.product);
+        if (product) {
+          const variant = product.variants.find(v => v.sku === item.sku);
+          if (variant) {
+            if (variant.stock < item.quantity) {
+              return responseHandler.error(res, `Insufficient stock for SKU: ${item.sku}. Available: ${variant.stock}, Ordered: ${item.quantity}`, 400);
+            }
+            variant.stock -= item.quantity;
+            await product.save();
+          }
+        }
+      }
+      order.deliveredAt = Date.now();
+      order.payment.status = "Paid";
+    }
+
+    // 2. When order is Cancelled — no stock to restore since we only deduct at Delivered
+    // (If it was already Delivered and somehow cancelled, restore stock)
+    if (status === "Cancelled" && order.status === "Delivered") {
+      for (const item of order.items) {
+        const product = await productSchema.findById(item.product);
+        if (product) {
+          const variant = product.variants.find(v => v.sku === item.sku);
+          if (variant) {
+            variant.stock += item.quantity;
+            await product.save();
+          }
+        }
+      }
+    }
+
+    if (status) order.status = status;
+    if (paymentStatus) order.payment.status = paymentStatus;
+
+    await order.save();
+
+    return responseHandler.success(res, "Order status updated successfully", order);
+  } catch (error) {
+    console.log(error);
+    return responseHandler.error(res, error.message);
+  }
+};
+
+module.exports = { checkOut, webhook, getAllOrders, getOrderDetails, updateOrderStatus };
+

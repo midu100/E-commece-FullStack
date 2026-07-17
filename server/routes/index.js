@@ -4,6 +4,7 @@ const authRoute = require('./auth')
 const categoryRoute = require('./category')
 const productRoute = require('./product')
 const orderRoute = require('./order')
+const dashboardRoute = require('./dashboard')
 const { authMiddleware } = require('../middleware/authMiddleware')
 const roleCheckMiddleware = require('../middleware/roleCheckMiddleware')
 
@@ -19,10 +20,12 @@ route.use('/product',productRoute)
 route.use('/cart',authMiddleware,require('./cart'))
 route.use(authMiddleware,orderRoute)
 route.use('/users',authMiddleware,roleCheckMiddleware('admin','editor'),require('./users'))
+route.use('/dashboard',authMiddleware,roleCheckMiddleware('admin','editor'),dashboardRoute)
 
 
 
 module.exports = route
+
 
 
 

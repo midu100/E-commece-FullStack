@@ -1,5 +1,5 @@
 const categorySchema = require("../models/categorySchema")
-const { uploadToCloudinary } = require("../utils/cloudinaryService")
+const { uploadToCloudinary, deleteToCloudinary } = require("../utils/cloudinaryService")
 
 const createCategory = async(req,res)=>{
     try {
@@ -41,4 +41,33 @@ const getAllCategory = async(req,res)=>{
     }
 }
 
-module.exports = {createCategory,getAllCategory}
+const updateCategory = async (req, res) => {
+    try {
+        const { name, description } = req.body
+        const { id } = req.params
+        const thumbnail = req.file
+
+        const category = await categorySchema.findById(id)
+        if (!category) return res.status(404).send({ message: "Category not found" })
+
+        if (name) category.name = name
+        if (description !== undefined) category.description = description
+
+        if (thumbnail) {
+            const imgRes = await uploadToCloudinary(thumbnail, 'categories')
+            if (category.thumbnail) {
+                await deleteToCloudinary(category.thumbnail, 'categories')
+            }
+            category.thumbnail = imgRes.secure_url
+        }
+
+        await category.save()
+        res.status(200).send({ message: "Category updated successfully", category })
+    } 
+    catch (error) {
+        console.log(error)
+        res.status(500).send({ message: "Internal server error" })
+    }
+}
+
+module.exports = {createCategory,getAllCategory,updateCategory}

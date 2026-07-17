@@ -5,12 +5,13 @@ import NewArrival from "@/components/ecommerce/NewArrival";
 import TopSelling from "@/components/ecommerce/TopSelling";
 import ServiceHighlights from "@/components/ecommerce/ServiceHighlights";
 
-export default function Home() {
+export default function Home({ searchParams }) {
+  const page = parseInt(searchParams?.page) || 1;
   return (
     <>
       <Hero />
       <Category />
-      <FeaturedProducts />
+      <FeaturedProducts page={page} />
       <NewArrival />
       <TopSelling />
       <ServiceHighlights />

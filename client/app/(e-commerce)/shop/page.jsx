@@ -1,7 +1,6 @@
-import SingleProduct from "@/components/shared/SingleProduct";
 import ShopHero from "@/components/ecommerce/shop/ShopHero";
 import ShopSidebar from "@/components/ecommerce/shop/ShopSidebar";
-import { products } from "@/components/ecommerce/shop/shopData";
+import ShopProductsList from "@/components/ecommerce/shop/ShopProductsList";
 import { apiClient } from "@/lib/apiClient";
 
 export default async function ShopPage({searchParams}) {
@@ -12,16 +11,7 @@ export default async function ShopPage({searchParams}) {
   })
   const categories = categoryRes?.categories
   const {category,search} = await searchParams
-  const res = await apiClient.get(`/product/allproducts${category ? `?category=${category}` : ""}${search ? `?search=${search}` : ""}`,{
-      next :{
-        revalidate : 60 * 5
-      }
-  })
 
-  
-    // const data = await res.json()
-  
-    console.log(res.productList.length)
   return (
     <section className="min-h-screen bg-white font-sans">
 
@@ -31,9 +21,7 @@ export default async function ShopPage({searchParams}) {
       {/* Top Bar */}
       <div className="container mx-auto px-4 md:px-6 lg:px-8 mt-8">
         <div className="flex items-center justify-between mb-6">
-          <p className="text-[13px] text-gray-500">
-            Showing <span className="font-bold text-black">{products.length}</span> results
-          </p>
+          <div className="w-1"></div>
           <select className="border border-gray-300 text-[13px] px-4 py-2 rounded-full outline-none bg-white cursor-pointer hover:border-black transition">
             <option>Sort by: Default</option>
             <option>Price: Low to High</option>
@@ -50,27 +38,8 @@ export default async function ShopPage({searchParams}) {
           {/* Left Sidebar */}
           <ShopSidebar cateName={categories} />
 
-          {/* Right: Products Grid */}
-          <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 ">
-              {res?.productList.map((product,i) => (
-                <SingleProduct
-                  key={i}
-                  name={product.title}
-                  price={product.price}
-                  src={product.thumbnail}
-                  cngPic={product.images[0]}
-                />
-              ))}
-            </div>
-
-            {/* Load More */}
-            <div className="text-center mt-14">
-              <button className="border-2 border-black text-black text-[11px] font-bold uppercase tracking-[3px] px-10 py-3.5 rounded-full hover:bg-black hover:text-white transition-all duration-300">
-                Load More
-              </button>
-            </div>
-          </div>
+          {/* Right: Products Grid & Pagination */}
+          <ShopProductsList category={category} search={search} />
 
         </div>
       </div>
